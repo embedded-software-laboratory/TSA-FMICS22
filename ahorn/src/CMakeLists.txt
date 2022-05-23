@@ -1,0 +1,6 @@
+add_subdirectory(cfg)
+add_subdirectory(compiler)
+add_subdirectory(ir)
+add_subdirectory(sa)
+add_subdirectory(se)
+add_subdirectory(pass)

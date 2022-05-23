@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<testcase>
+	<initialization>
+		<valuation variable="P.b">false</valuation>
+		<valuation variable="P.f.x">0</valuation>
+		<valuation variable="P.f.y">0</valuation>
+		<valuation variable="P.f.z">false</valuation>
+	</initialization>
+	<input cycle="0">
+		<valuation variable="P.a">32</valuation>
+	</input>
+	<input cycle="1">
+		<valuation variable="P.a">32</valuation>
+	</input>
+	<input cycle="2">
+		<valuation variable="P.a">32</valuation>
+	</input>
+</testcase>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<testcase>
+	<initialization>
+		<valuation variable="P.e">false</valuation>
+		<valuation variable="P.r">0</valuation>
+		<valuation variable="P.y">0</valuation>
+		<valuation variable="P.z">0</valuation>
+	</initialization>
+	<input cycle="0">
+		<valuation variable="P.x">9</valuation>
+	</input>
+</testcase>

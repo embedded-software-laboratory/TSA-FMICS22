@@ -1,0 +1,133 @@
+PROGRAM SFEquivalent
+VAR_INPUT
+    Activate : BOOL;
+    SChannelA : BOOL;
+    SChannelB : BOOL;
+    DiscrepancyTime : TIME;
+END_VAR
+VAR
+    Timer : TON;
+END_VAR
+VAR_OUTPUT
+    Ready : BOOL;
+	SEquivalentOut : BOOL;
+	Error : BOOL;
+	DiagCode : WORD;
+END_VAR
+
+IF NOT Activate THEN
+    DiagCode := 16#0000;
+ELSE
+    CASE DiagCode OF
+    16#0000:
+        IF Activate THEN
+            DiagCode := 16#8001;
+        END_IF;
+    16#8001:
+        IF SChannelA AND NOT SChannelB THEN
+            DiagCode := 16#8004;
+        ELSIF SChannelB AND NOT SChannelA THEN
+            DiagCode := 16#8014;
+        ELSIF SChannelA AND SChannelB THEN
+            DiagCode := 16#8000;
+        END_IF;
+    16#8004:
+        IF Timer.Q THEN
+            DiagCode := 16#C001;
+        ELSIF NOT SChannelA THEN
+            DiagCode := 16#8001;
+        ELSIF SChannelB THEN
+            DiagCode := 16#8000;
+        END_IF;
+    16#C001,
+    16#C002:
+        IF NOT SChannelA AND NOT SChannelB THEN
+            DiagCode := 16#8001;
+        END_IF;
+    16#8014:
+        IF Timer.Q THEN
+            DiagCode := 16#C002;
+        ELSIF NOT SChannelB THEN
+            DiagCode := 16#8001;
+        ELSIF SChannelA THEN
+            DiagCode := 16#8000;
+        END_IF;
+    16#C003:
+        IF NOT SChannelA AND NOT SChannelB THEN
+            DiagCode := 16#8001;
+        END_IF;
+    16#8005:
+        IF Timer.Q THEN
+            DiagCode := 16#C003;
+        ELSIF NOT SChannelA AND NOT SChannelB THEN
+            DiagCode := 16#8001;
+        END_IF;
+    16#8000:
+        IF SChannelA XOR SChannelB THEN
+            DiagCode := 16#8005;
+        ELSIF NOT SChannelA AND NOT SChannelB THEN
+            DiagCode := 16#8001;
+        END_IF;
+    END_CASE;
+END_IF;
+
+CASE DiagCode OF
+16#0000:
+    Timer(IN:=FALSE, PT:=DiscrepancyTime);
+    Ready := FALSE;
+    Error := FALSE;
+    SEquivalentOut:= FALSE;
+16#8000:
+    Timer(IN:=FALSE, PT:=DiscrepancyTime);
+    Ready := TRUE;
+    Error := FALSE;
+    SEquivalentOut := TRUE;
+16#8001:
+    Timer(IN:=FALSE, PT:=DiscrepancyTime);
+    Ready := TRUE;
+    Error := FALSE;
+    SEquivalentOut:= FALSE;
+16#8004,
+16#8014,
+16#8005:
+	Timer(IN:=TRUE, PT:=DiscrepancyTime);
+    Ready := TRUE;
+    Error := FALSE;
+    SEquivalentOut:= FALSE;
+16#C001,
+16#C002,
+16#C003:
+    Timer(IN:=FALSE, PT:=DiscrepancyTime);
+    Ready := TRUE;
+    Error := TRUE;
+    SEquivalentOut:= FALSE;
+END_CASE;
+END_PROGRAM
+
+FUNCTION_BLOCK TON
+VAR_INPUT
+    IN : BOOL;
+    PT : TIME;
+END_VAR
+VAR
+    running : BOOL;
+END_VAR
+VAR_TEMP
+    timeout : BOOL;
+END_VAR
+VAR_OUTPUT
+    Q : BOOL;
+    ET : TIME;
+END_VAR
+timeout := NONDETERMINISTIC_BOOL();
+IF NOT IN THEN
+    Q := FALSE;
+    running := FALSE;
+ELSIF NOT running AND NOT Q THEN
+    running := TRUE;
+ELSIF running AND NOT Q THEN
+    Q := timeout;
+    running := NOT Q;
+END_IF;
+ET := NONDETERMINISTIC_TIME();
+END_FUNCTION_BLOCK

@@ -1,0 +1,26 @@
+PROGRAM P
+VAR_INPUT
+    x : INT;
+END_VAR
+VAR
+    f : Fb;
+END_VAR
+VAR_OUTPUT
+    y : BOOL;
+END_VAR
+    f(a:=x,b=>y);
+END_PROGRAM
+
+FUNCTION_BLOCK Fb
+VAR_INPUT
+    a : INT;
+END_VAR
+VAR_OUTPUT
+    b : BOOL;
+END_VAR
+IF a > 32 THEN
+    b := TRUE;
+ELSE
+    b := FALSE;
+END_IF;
+END_FUNCTION_BLOCK

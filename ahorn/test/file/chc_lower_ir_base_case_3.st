@@ -1,0 +1,11 @@
+PROGRAM P
+VAR
+    x : BOOL;
+    y : INT;
+END_VAR
+    IF x THEN
+
+    ELSE
+        y := 1;
+    END_IF;
+END_PROGRAM

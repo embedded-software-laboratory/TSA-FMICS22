@@ -1,0 +1,23 @@
+ifndef ROOT
+ROOT := $(shell ($PWD))
+endif
+
+CUDD=$(ROOT)/cudd-2.4.2
+
+CC = @CC@
+ICFLAGS = -g -Wall -O6
+#XCFLAGS = -mtune=pentium4 -DHAVE_IEEE_754 -DBSD
+#XCFLAGS	= -mtune=native -DHAVE_IEEE_754 -DBSD -DSIZEOF_VOID_P=8 -DSIZEOF_LONG=8
+XCFLAGS	=  -DHAVE_IEEE_754 -DBSD -DSIZEOF_VOID_P=@SIZEOF_VOID_P@ -DSIZEOF_LONG=@SIZEOF_LONG@
+INCLUDE = -I$(CUDD)/include -I$(ROOT)/src/include
+CFLAGS = $(ICFLAGS) $(MFLAG) $(XCFLAGS) $(INCLUDE)
+LDFLAGS = @LDFLAGS@ -L$(CUDD)/cudd -L$(CUDD)/st -L$(CUDD)/util -L$(CUDD)/mtr -L$(CUDD)/epd -L$(CUDD)/dddmp -L$(ROOT)/src/ldd -L$(ROOT)/src/tvpi
+LDLIBS = -lcudd  -ltvpi -lldd -lst -lutil -lmtr -lepd -ldddmp -lgmp -lm
+
+TESTLIBS = $(CUDD)/cudd/libcudd.a $(CUDD)/st/libst.a \
+	   $(CUDD)/util/libutil.a $(CUDD)/mtr/libmtr.a \
+	   $(CUDD)/epd/libepd.a $(CUDD)/dddmp/libdddmp.a \
+	   $(ROOT)/src/ldd/libldd.a  \
+	   $(ROOT)/src/tvpi/libtvpi.a
+
+AR = ar -rcs 
